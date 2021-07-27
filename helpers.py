@@ -4,10 +4,11 @@ import copy
 # returns non variant/deviant/subspecies monsters
 def filter_out_variants(df):
     monsters_df = df.reset_index()
+    # sort list by len('Name')
     newIndex = monsters_df['Name'].str.len().sort_values(kind='heapsort').index
     monsters_df = monsters_df.reindex(newIndex)
     list_monsters = monsters_df['Name'].to_list()
-    list_monsters_t = list_monsters
+    # Create deepcopy
     list_monsters_t = copy.deepcopy(list_monsters)
     for monster in list_monsters:
         m = re.compile(monster)

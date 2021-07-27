@@ -10,22 +10,28 @@ def get_amt_titles_df():
      "Ultimate": pd.Series(['Monster Hunter Freedom', 'Monster Hunter Freedom Unite', 'Monster Hunter 3 Ultimate', np.nan,
             'Monster Hunter 4 Ultimate', 'Monster Hunter Generations Ultimate', 'Monster Hunter World: Iceborne', np.nan,])})
 
-def get_amt_table(amt_analysis_titles, titles_amt_data):
-    # filter for analysis Titles
+def get_amt_table(titles_amt_data):
+    # Create blank output df
     amt_monsters_df = pd.DataFrame(
         columns=['Title', 'Release Date', 'Total Monsters', 'Large Monsters', 'Small Monsters',
                  'New Monsters', 'New Large Monsters', 'New Small Monsters', 'Variant Monsters'])
     valid_titles = titles_amt_data['Title'].unique()
+    # concat to tables for every analysis title
     for title in valid_titles:
         title_data = titles_amt_data[titles_amt_data['Title'] == title]
         title_date = min(title_data['Date Released'])
-
+        # get monsters from previous games
         monsters_from_prev_games = titles_amt_data[titles_amt_data['Date Released'] < title_date][
             'Name'].drop_duplicates()
+        # get monsters from current title
         monsters_in_title = title_data[['Name', 'Type', 'Size']].drop_duplicates()
+        # get new monsters introduced in title
         new_monsters = monsters_in_title[monsters_in_title['Name'].isin(monsters_from_prev_games) == False]
+        # get variant monsters
         num_variants = monsters_in_title[monsters_in_title['Size'] == 'Large']['Name'].count() - len(
             helpers.filter_out_variants(monsters_in_title[monsters_in_title['Size'] == 'Large']))
+        # if there is new large monsters, add count otherwise it is 0.
+        # repeated for new small monsters
         try:
             new_large_t_monsters = new_monsters.groupby(['Size']).size().Large
         except:
@@ -34,7 +40,7 @@ def get_amt_table(amt_analysis_titles, titles_amt_data):
             new_small_t_monsters = new_monsters.groupby(['Size']).size().Small
         except:
             new_small_t_monsters = 0
-
+        # concat row
         df_segment = pd.DataFrame(
             [[title,
               title_date,
@@ -49,6 +55,7 @@ def get_amt_table(amt_analysis_titles, titles_amt_data):
                      'New Monsters', 'New Large Monsters', 'New Small Monsters', 'Variant Monsters'])
         amt_monsters_df = pd.concat([amt_monsters_df, df_segment])
 
+    # compute ratios
     amt_monsters_df = amt_monsters_df.sort_values(by=['Release Date']).reset_index(drop=False)
     amt_monsters_df['New Monster Ratio'] = amt_monsters_df['New Large Monsters'] / amt_monsters_df['Large Monsters']
     amt_monsters_df['Variant Monster Ratio'] = amt_monsters_df['Variant Monsters'] / amt_monsters_df['Large Monsters']
@@ -65,13 +72,14 @@ def get_base_ultimate_df(game_titles, mh_data):
     game_title_data = mh_data[mh_data['Title'].isin(game_titles_lst) == True]
     game_title_data = game_title_data[['Title', 'Date Released']].sort_values(by=['Date Released']).drop_duplicates(
         subset=['Title'], keep='first')
-
+    # make 2 tables, Base games and Ultimate games
     base = pd.merge(game_title_data, game_titles, left_on='Title', right_on="Base", how='right').dropna()[
         ['Title', 'Date Released']]
     ultimate = pd.merge(game_title_data, game_titles, left_on='Title', right_on="Ultimate", how='left').dropna()[
         ['Title', 'Date Released']]
     base = base.reset_index(drop=True).reset_index()
     ultimate = ultimate.reset_index(drop=True).reset_index()
+    # add 'Large Monster' column to each table
     base['Large Monsters'] = base['Title'].apply(lambda title:
                                                  len(mh_data[
                                                          (mh_data['Title'] == title) & (mh_data['Size'] == 'Large')][
@@ -79,8 +87,9 @@ def get_base_ultimate_df(game_titles, mh_data):
     ultimate['Large Monsters'] = ultimate['Title'].apply(lambda title:
                                                          len(mh_data[(mh_data['Title'] == title) & (
                                                                      mh_data['Size'] == 'Large')]['Name'].unique()))
+    # combine tables
     game_date_data = pd.merge(base, ultimate, on='index', suffixes=('_base', '_ultimate'))
-    game_date_data
+    # compute date and monster differences
     game_date_data['date_difference'] = abs(
         game_date_data['Date Released_ultimate'] - game_date_data['Date Released_base'])
     game_date_data['monster_difference'] = abs(
