@@ -88,11 +88,72 @@ def get_base_ultimate_df(game_titles, mh_data):
                                                          len(mh_data[(mh_data['Title'] == title) & (
                                                                      mh_data['Size'] == 'Large')]['Name'].unique()))
     # combine tables
-    game_date_data = pd.merge(base, ultimate, on='index', suffixes=('_base', '_ultimate'))
+    game_date_data = pd.merge(base, ultimate, on='index', suffixes=(' Base', ' Ultimate'))
     # compute date and monster differences
     game_date_data['date_difference'] = abs(
-        game_date_data['Date Released_ultimate'] - game_date_data['Date Released_base'])
+        game_date_data['Date Released Ultimate'] - game_date_data['Date Released Base'])
     game_date_data['monster_difference'] = abs(
-    game_date_data['Large Monsters_ultimate'] - game_date_data['Large Monsters_base'])
+    game_date_data['Large Monsters Ultimate'] - game_date_data['Large Monsters Base'])
 
     return game_date_data.drop('index',axis=1)
+
+def get_director_df(mh_data):
+    director_data = mh_data.sort_values(by=['Date Released']).drop_duplicates(subset=['Name'], keep='first')
+
+    fujioka_titles = director_data[director_data['Director'] == 'Kaname Fujioka'][
+        ['Title', 'Date Released', 'Director']].sort_values(by='Date Released').drop_duplicates(subset=['Title'],
+                                                                                                keep='first')
+    ichinose_titles = director_data[director_data['Director'] == 'Yasunori Ichinose'][
+        ['Title', 'Date Released', 'Director']].sort_values(by='Date Released').drop_duplicates(subset=['Title'],
+                                                                                                keep='first')
+    tokuda_titles = director_data[director_data['Director'] == 'Yuya Tokuda'][
+        ['Title', 'Date Released', 'Director']].sort_values(by='Date Released').drop_duplicates(subset=['Title'],
+                                                                                                keep='first')
+
+    director_data['Director'].unique()
+
+    fujioka_monsters = director_data[director_data['Director'] == 'Kaname Fujioka'][['Name', 'Title']]
+    ichinose_monsters = director_data[director_data['Director'] == 'Yasunori Ichinose'][['Name', 'Title']]
+    tokuda_monsters = director_data[director_data['Director'] == 'Yuya Tokuda'][['Name', 'Title']]
+
+    # fujioka
+    fujioka_titles["Total Monsters"] = fujioka_titles['Title'].apply(lambda title:
+                                                                     mh_data[mh_data['Title'] == title][
+                                                                         'Name'].drop_duplicates().count()
+                                                                     )
+    fujioka_titles["Director Monsters"] = fujioka_titles['Title'].apply(lambda title:
+                                                                        mh_data[(mh_data['Title'] == title) & (
+                                                                                    mh_data['Name'].isin(
+                                                                                        fujioka_monsters[
+                                                                                            'Name']) == True)][
+                                                                            'Name'].drop_duplicates().count()
+                                                                        )
+    # ichinose
+    ichinose_titles["Total Monsters"] = ichinose_titles['Title'].apply(lambda title:
+                                                                       mh_data[mh_data['Title'] == title][
+                                                                           'Name'].drop_duplicates().count()
+                                                                       )
+    ichinose_titles["Director Monsters"] = ichinose_titles['Title'].apply(lambda title:
+                                                                          mh_data[(mh_data['Title'] == title) & (
+                                                                                      mh_data['Name'].isin(
+                                                                                          ichinose_monsters[
+                                                                                              'Name']) == True)][
+                                                                              'Name'].drop_duplicates().count()
+                                                                          )
+    # tokuda
+    tokuda_titles["Total Monsters"] = tokuda_titles['Title'].apply(lambda title:
+                                                                   mh_data[mh_data['Title'] == title][
+                                                                       'Name'].drop_duplicates().count()
+                                                                   )
+    tokuda_titles["Director Monsters"] = tokuda_titles['Title'].apply(lambda title:
+                                                                      mh_data[(mh_data['Title'] == title) & (
+                                                                                  mh_data['Name'].isin(tokuda_monsters[
+                                                                                                           'Name']) == True)][
+                                                                          'Name'].drop_duplicates().count()
+                                                                      )
+    concat_director = pd.concat([fujioka_titles, ichinose_titles, tokuda_titles]).sort_values(by='Date Released')
+    concat_director['Director Monster Ratio'] = concat_director['Director Monsters'] / concat_director['Total Monsters']
+    return concat_director, pd.DataFrame([["Kaname Fujioka", fujioka_titles['Title'].count(), fujioka_monsters['Name'].count()],
+                  ["Yasunori Ichinose", ichinose_titles['Title'].count(), ichinose_monsters['Name'].count()],
+                  ["Yuya Tokuda", tokuda_titles['Title'].count(), tokuda_monsters['Name'].count()]],
+                 columns=['Director', 'Titles', 'Total Director Monsters'])

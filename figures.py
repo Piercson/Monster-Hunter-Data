@@ -54,8 +54,7 @@ def make_base_ultimate(base_ultimate):
     ax.grid(axis='x', zorder=0)
     width = 0.25
     rects1 = np.arange(len(labels))
-    ax.barh(rects1, monsters_diff, height=width, edgecolor='white', label='Total Monsters', color='#809e6e')
-
+    ax.barh(rects1, monsters_diff, height=width, edgecolor='white', label='Total Monsters', color='#809e6e', zorder=2)
     ax.set_yticks(rects1)
     ax.set_yticklabels(labels, fontsize='15', color='#423e35')
     ax.invert_yaxis()
