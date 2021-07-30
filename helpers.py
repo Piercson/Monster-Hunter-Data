@@ -21,3 +21,7 @@ def filter_out_variants(df):
                         pass
     list_nonVarient_monsters = list_monsters_t
     return monsters_df[monsters_df['Name'].isin(list_nonVarient_monsters) == True]['Name'].to_list()
+
+def pretty_print_s(series):
+    for index, value in series.items():
+        print('{:<14}  {:>7}'.format(index,value))

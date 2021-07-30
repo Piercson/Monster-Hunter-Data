@@ -10,8 +10,17 @@ def get_amt_titles_df():
      "Ultimate": pd.Series(['Monster Hunter Freedom', 'Monster Hunter Freedom Unite', 'Monster Hunter 3 Ultimate', np.nan,
             'Monster Hunter 4 Ultimate', 'Monster Hunter Generations Ultimate', 'Monster Hunter World: Iceborne', np.nan,])})
 
-def get_amt_table(titles_amt_data):
+def get_base_ultimate_titles():
+    return pd.DataFrame(
+    {"Base": pd.Series(['Monster Hunter','Monster Hunter Freedom 2', 'Monster Hunter 3',
+              'Monster Hunter 4','Monster Hunter X', 'Monster Hunter: World',]),
+     "Ultimate": pd.Series(['Monster Hunter G', 'Monster Hunter Freedom Unite', 'Monster Hunter 3 Ultimate',
+            'Monster Hunter 4 G', 'Monster Hunter XX', 'Monster Hunter World: Iceborne'])})
+
+def get_amt_table(amt_analysis_titles, mh_data):
     # Create blank output df
+    amt_analysis_titles_lst = amt_analysis_titles['Base'].append(amt_analysis_titles['Ultimate']).dropna()
+    titles_amt_data = mh_data[mh_data['Title'].isin(amt_analysis_titles_lst) == True]
     amt_monsters_df = pd.DataFrame(
         columns=['Title', 'Release Date', 'Total Monsters', 'Large Monsters', 'Small Monsters',
                  'New Monsters', 'New Large Monsters', 'New Small Monsters', 'Variant Monsters'])
@@ -61,12 +70,7 @@ def get_amt_table(titles_amt_data):
     amt_monsters_df['Variant Monster Ratio'] = amt_monsters_df['Variant Monsters'] / amt_monsters_df['Large Monsters']
     return amt_monsters_df
 
-def get_base_ultimate_titles():
-    return pd.DataFrame(
-    {"Base": pd.Series(['Monster Hunter','Monster Hunter Freedom 2', 'Monster Hunter 3',
-              'Monster Hunter 4','Monster Hunter X', 'Monster Hunter: World',]),
-     "Ultimate": pd.Series(['Monster Hunter G', 'Monster Hunter Freedom Unite', 'Monster Hunter 3 Ultimate',
-            'Monster Hunter 4 G', 'Monster Hunter XX', 'Monster Hunter World: Iceborne'])})
+
 def get_base_ultimate_df(game_titles, mh_data):
     game_titles_lst = game_titles['Base'].append(game_titles['Ultimate']).dropna()
     game_title_data = mh_data[mh_data['Title'].isin(game_titles_lst) == True]
@@ -96,6 +100,17 @@ def get_base_ultimate_df(game_titles, mh_data):
     game_date_data['Large Monsters Ultimate'] - game_date_data['Large Monsters Base'])
 
     return game_date_data.drop('index',axis=1)
+
+def get_monster_occurance_df(amt_analysis_titles, mh_data):
+    # filter for analysis titles
+    amt_analysis_titles_lst = amt_analysis_titles['Base'].append(amt_analysis_titles['Ultimate']).dropna()
+    monster_occurance_data = mh_data[mh_data['Title'].isin(amt_analysis_titles_lst) == True].sort_values(
+        by=['Date Released']).drop_duplicates(subset=['Title', 'Name'], keep='first')
+    # get occurances on monsters throughout series
+    monster_occurance_data = monster_occurance_data[monster_occurance_data['Size'] == "Large"].groupby(['Name'])[
+        'Type'].count().sort_values(ascending=False)
+
+    return monster_occurance_data.head(10).to_frame(name='Occurance').reset_index()
 
 def get_director_df(mh_data):
     director_data = mh_data.sort_values(by=['Date Released']).drop_duplicates(subset=['Name'], keep='first')
@@ -157,3 +172,10 @@ def get_director_df(mh_data):
                   ["Yasunori Ichinose", ichinose_titles['Title'].count(), ichinose_monsters['Name'].count()],
                   ["Yuya Tokuda", tokuda_titles['Title'].count(), tokuda_monsters['Name'].count()]],
                  columns=['Director', 'Titles', 'Total Director Monsters'])
+
+def get_types_df(mh_data):
+    monster_type_data = mh_data.drop_duplicates(subset=['Name']).groupby('Type').count()['Name'].to_frame(
+        'Count').reset_index().sort_values(by='Count', ascending=False)
+    monster_type_intro_date = mh_data.sort_values(by='Date Released').drop_duplicates(subset=['Type'],
+                                                                                           keep='first')
+    return monster_type_data, monster_type_intro_date[['Type', 'Title', 'Date Released']].reset_index(drop=True)
