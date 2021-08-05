@@ -44,8 +44,8 @@ def make_amt_monsters_figure(amt_monsters_df):
 
 def make_base_ultimate_figure(base_ultimate):
     labels = ['Monster Hunter \nvs          \n Monster Hunter G',
-              'Monster Hunter Freedom 2 \nvs          \n Monster Hunter Freedom Unite',
-              'Monster Hunter 3 \nvs          \n Monster Hunter 3 Ultimate',
+              'Monster Hunter Portable 2nd \nvs          \n Monster Hunter Portable 2nd G',
+              'Monster Hunter 3 \nvs          \n Monster Hunter 3 G',
               'Monster Hunter 4 \nvs          \n Monster Hunter 4 G',
               'Monster Hunter X \nvs          \n Monster Hunter XX',
               'Monster Hunter: World \nvs          \n Monster Hunter World: Iceborne']

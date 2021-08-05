@@ -12,9 +12,9 @@ def get_amt_titles_df():
 
 def get_base_ultimate_titles():
     return pd.DataFrame(
-    {"Base": pd.Series(['Monster Hunter','Monster Hunter Freedom 2', 'Monster Hunter 3',
+    {"Base": pd.Series(['Monster Hunter','Monster Hunter Portable 2nd', 'Monster Hunter 3',
               'Monster Hunter 4','Monster Hunter X', 'Monster Hunter: World',]),
-     "Ultimate": pd.Series(['Monster Hunter G', 'Monster Hunter Freedom Unite', 'Monster Hunter 3 Ultimate',
+     "Ultimate": pd.Series(['Monster Hunter G', 'Monster Hunter Portable 2nd G', 'Monster Hunter 3 G',
             'Monster Hunter 4 G', 'Monster Hunter XX', 'Monster Hunter World: Iceborne'])})
 
 def get_amt_table(amt_analysis_titles, mh_data):
