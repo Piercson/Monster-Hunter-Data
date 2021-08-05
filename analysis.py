@@ -101,16 +101,21 @@ def get_base_ultimate_df(game_titles, mh_data):
 
     return game_date_data.drop('index',axis=1)
 
-def get_monster_occurance_df(amt_analysis_titles, mh_data):
+def get_monster_occurance_df(analysis_titles, mh_data):
     # filter for analysis titles
-    amt_analysis_titles_lst = amt_analysis_titles['Base'].append(amt_analysis_titles['Ultimate']).dropna()
+    amt_analysis_titles_lst = analysis_titles['Base'].append(analysis_titles['Ultimate']).dropna()
     monster_occurance_data = mh_data[mh_data['Title'].isin(amt_analysis_titles_lst) == True].sort_values(
         by=['Date Released']).drop_duplicates(subset=['Title', 'Name'], keep='first')
     # get occurances on monsters throughout series
-    monster_occurance_data = monster_occurance_data[monster_occurance_data['Size'] == "Large"].groupby(['Name'])[
-        'Type'].count().sort_values(ascending=False)
+    monster_occurance_data = monster_occurance_data.groupby(['Name', 'Type'])['Title'].count().to_frame(
+        name='Occurance').reset_index().sort_values(by=['Type', 'Occurance'], ascending='False')
+    # get max occurances
+    max_occ_monsters = monster_occurance_data.groupby('Type')['Occurance'].max().reset_index()
+    # join Max occurances
+    max_occ_monsters = pd.merge(monster_occurance_data, max_occ_monsters, on='Type', suffixes=('', '_max'))
+    max_occ_monsters = max_occ_monsters[max_occ_monsters['Occurance'] == max_occ_monsters['Occurance_max']]
+    return max_occ_monsters.sort_values(by=['Occurance', 'Type'], ascending=False).reset_index(drop=True)[['Name', 'Type', 'Occurance']]
 
-    return monster_occurance_data.head(10).to_frame(name='Occurance').reset_index()
 
 def get_director_df(mh_data):
     director_data = mh_data.sort_values(by=['Date Released']).drop_duplicates(subset=['Name'], keep='first')
