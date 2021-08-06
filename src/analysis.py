@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-import helpers
+from src import helpers
 
 # returns the amount analysis titles with columns Base and Ultimate
 def get_amt_titles_df():
@@ -121,16 +121,11 @@ def get_director_df(mh_data):
     director_data = mh_data.sort_values(by=['Date Released']).drop_duplicates(subset=['Name'], keep='first')
 
     fujioka_titles = director_data[director_data['Director'] == 'Kaname Fujioka'][
-        ['Title', 'Date Released', 'Director']].sort_values(by='Date Released').drop_duplicates(subset=['Title'],
-                                                                                                keep='first')
+        ['Title', 'Date Released', 'Director']].drop_duplicates(subset=['Title'],keep='first')
     ichinose_titles = director_data[director_data['Director'] == 'Yasunori Ichinose'][
-        ['Title', 'Date Released', 'Director']].sort_values(by='Date Released').drop_duplicates(subset=['Title'],
-                                                                                                keep='first')
+        ['Title', 'Date Released', 'Director']].drop_duplicates(subset=['Title'],keep='first')
     tokuda_titles = director_data[director_data['Director'] == 'Yuya Tokuda'][
-        ['Title', 'Date Released', 'Director']].sort_values(by='Date Released').drop_duplicates(subset=['Title'],
-                                                                                                keep='first')
-
-    director_data['Director'].unique()
+        ['Title', 'Date Released', 'Director']].drop_duplicates(subset=['Title'],keep='first')
 
     fujioka_monsters = director_data[director_data['Director'] == 'Kaname Fujioka'][['Name', 'Title']]
     ichinose_monsters = director_data[director_data['Director'] == 'Yasunori Ichinose'][['Name', 'Title']]

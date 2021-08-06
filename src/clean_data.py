@@ -2,9 +2,9 @@ import pandas as pd
 
 def get_data():
     # read tables
-    classes = pd.read_csv('Monster_Classes.csv')
-    g_data = pd.read_csv('MonsterHunter_General_Data.csv')
-    m_games = pd.read_csv('Monsters_in_Games.csv')
+    classes = pd.read_csv('data/Monster_Classes.csv')
+    g_data = pd.read_csv('data/MonsterHunter_General_Data.csv')
+    m_games = pd.read_csv('data/Monsters_in_Games.csv')
     # re order table to create a column to join on
     monsters_in_games = m_games.melt(var_name='Title', value_name='Name')
     monsters_in_games = monsters_in_games[monsters_in_games['Name'].notnull()]
