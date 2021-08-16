@@ -88,16 +88,34 @@ def get_base_ultimate_df(game_titles, mh_data):
                                                  len(mh_data[
                                                          (mh_data['Title'] == title) & (mh_data['Size'] == 'Large')][
                                                          'Name'].unique()))
+    base['Variant Monsters'] = base['Title'].apply(lambda title:
+                                                   len(mh_data[
+                                                           (mh_data['Title'] == title) & (mh_data['Size'] == 'Large')][
+                                                           'Name'].unique()) - len(helpers.filter_out_variants(
+                                                       mh_data[(mh_data['Title'] == title) & (
+                                                                   mh_data['Size'] == 'Large')].drop_duplicates(
+                                                           subset='Name'))))
+
     ultimate['Large Monsters'] = ultimate['Title'].apply(lambda title:
                                                          len(mh_data[(mh_data['Title'] == title) & (
-                                                                     mh_data['Size'] == 'Large')]['Name'].unique()))
+                                                                 mh_data['Size'] == 'Large')]['Name'].unique()))
+    ultimate['Variant Monsters'] = ultimate['Title'].apply(lambda title:
+                                                           len(mh_data[
+                                                                   (mh_data['Title'] == title) & (
+                                                                               mh_data['Size'] == 'Large')][
+                                                                   'Name'].unique()) - len(helpers.filter_out_variants(
+                                                               mh_data[(mh_data['Title'] == title) & (
+                                                                           mh_data['Size'] == 'Large')].drop_duplicates(
+                                                                   subset='Name'))))
     # combine tables
     game_date_data = pd.merge(base, ultimate, on='index', suffixes=(' Base', ' Ultimate'))
     # compute date and monster differences
-    game_date_data['date_difference'] = abs(
+    game_date_data['Date Difference'] = abs(
         game_date_data['Date Released Ultimate'] - game_date_data['Date Released Base'])
-    game_date_data['monster_difference'] = abs(
-    game_date_data['Large Monsters Ultimate'] - game_date_data['Large Monsters Base'])
+    game_date_data['Monster Difference'] = abs(
+        game_date_data['Large Monsters Ultimate'] - game_date_data['Large Monsters Base'])
+    game_date_data['Variant Monster Difference'] = abs(
+        game_date_data['Variant Monsters Ultimate'] - game_date_data['Variant Monsters Base'])
 
     return game_date_data.drop('index',axis=1)
 
