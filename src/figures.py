@@ -49,18 +49,24 @@ def make_base_ultimate_figure(base_ultimate):
               'Monster Hunter 4 \nvs          \n Monster Hunter 4 G',
               'Monster Hunter X \nvs          \n Monster Hunter XX',
               'Monster Hunter: World \nvs          \n Monster Hunter World: Iceborne']
-    monsters_diff = base_ultimate['monster_difference']
+    monsters_diff = base_ultimate['Monster Difference']
+    var_monster_diff = base_ultimate['Variant Monster Difference']
     fig, ax = plt.subplots(figsize=(10, 10), dpi=80)
     ax.grid(axis='x', zorder=0)
     width = 0.25
     rects1 = np.arange(len(labels))
-    ax.barh(rects1, monsters_diff, height=width, edgecolor='white', label='Total Monsters', color='#cb6a63', zorder=2)
+    rects2 = [x + width for x in rects1]
+    ax.barh(rects1, monsters_diff, height=width, edgecolor='white', label='Total Monsters', color='#cb6a63', hatch='',
+            zorder=2)
+    ax.barh(rects2, var_monster_diff, height=width, edgecolor='white', label='Total Monsters', color='#d2bc96',
+            hatch='', zorder=2)
     ax.set_yticks(rects1)
-    ax.set_yticklabels(labels, fontsize='15', color='#423e35')
+    ax.set_yticklabels(labels, fontsize='17', color='#423e35')
     ax.invert_yaxis()
-    ax.set_title('Base Vs Ultimate', color='#423e35', fontsize='20')
-    ax.set_xlabel('Difference of Monsters')
+    ax.set_title('Base Game Vs Ultimate Expansion', color='#423e35', fontsize='20')
+    ax.set_xlabel('Amount of Monsters', fontsize='15', color='#423e35')
     ax.set_facecolor('#fcf3ea')
+    ax.legend(['Monster Difference Between Games', 'Variant Monsters Added in Ultimate Expansion'])
     fig.set_facecolor('#fcf3ea')
     fig.set_edgecolor(color='#98805c')
     fig.patch.set_linewidth('1')
@@ -125,10 +131,10 @@ def make_director_figure(director_title_data):
     rects2 = [x + width for x in rects1]
     ax2.barh(rects1, tokuda_tm, height=width, edgecolor='white', label='Total Monsters', color='#cb6a63', zorder=2)
     ax2.barh(rects2, tokuda_dm, height=width, edgecolor='white', label='Director Monsters', color='#736aab', zorder=2)
-    ax2.set_xlabel("Number of Monsters", fontsize='12', color='#423e35')
+    # ax2.set_xlabel("Number of Monsters", fontsize='12', color='#423e35')
     ax2.set_yticks(rects1)
     ax2.set_yticklabels(tokuda_titles, fontsize='15', color='#423e35')
-    ax2.legend(fontsize='12', loc=3)
+    ax2.legend(fontsize='15', loc=3)
     ax2.invert_yaxis()
     ax2.set_title('Yuya Tokuda Monsters', color='#423e35', fontsize='20')
     ax2.set_facecolor('#fcf3ea')
@@ -137,8 +143,9 @@ def make_director_figure(director_title_data):
     fig.set_facecolor('#fcf3ea')
     fig.set_edgecolor(color='#98805c')
     fig.patch.set_linewidth('1')
-    fig.tight_layout()
-
+    fig.tight_layout(rect=[0, 0.03, 1, 0.95])
+    fig.suptitle('Directors Monster Throughout the Series',fontsize='22',color='#423e35')
+    fig.supxlabel("Number of Monsters", fontsize='15', color='#423e35')
     fig.savefig('Figures/directors_monsters.png',
                 facecolor=fig.get_facecolor(),
                 edgecolor=fig.get_edgecolor(),
@@ -156,7 +163,7 @@ def make_type_figure(monster_type_data):
     ax.set_yticklabels(labels, fontsize='15', color='#423e35')
     ax.invert_yaxis()
     ax.set_title('Distribution of Monsters Types \nin Mainline Series', color='#423e35', fontsize='20')
-    ax.set_xlabel('Number of Monsters', fontsize='15')
+    ax.set_xlabel('Number of Monsters', fontsize='15',color='#423e35')
     ax.set_facecolor('#fcf3ea')
     fig.set_facecolor('#fcf3ea')
     fig.set_edgecolor(color='#98805c')
