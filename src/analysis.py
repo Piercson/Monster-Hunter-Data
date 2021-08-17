@@ -197,3 +197,12 @@ def get_types_df(mh_data):
     monster_type_intro_date = mh_data.sort_values(by='Date Released').drop_duplicates(subset=['Type'],
                                                                                            keep='first')
     return monster_type_data, monster_type_intro_date[['Type', 'Title', 'Date Released']].reset_index(drop=True)
+def get_time_between_bas_ultimate(bu_game_date_data):
+    print('Mean of time between games {:2.5f} months'.format(bu_game_date_data['Date Difference'].mean().days/30.5))
+    print('Median of time between games {:2.5f} months'.format(bu_game_date_data['Date Difference'].median().days/30.5))
+
+def get_avg_amt_monsters(amt_monsters_df):
+    print('Mean of New Monster Ratio {:2.5f} '.format(amt_monsters_df['New Monster Ratio'].mean()))
+    print('Median of New Monster Ratio: {:2.5f}'.format(amt_monsters_df['New Monster Ratio'].median()))
+    print('\nMean of Variant Monster Ratio: {:2.5f}'.format(amt_monsters_df['Variant Monster Ratio'].mean()))
+    print('Median of Variant Monster Ratio: {:2.5f}'.format(amt_monsters_df['Variant Monster Ratio'].median()))

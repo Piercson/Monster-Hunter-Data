@@ -133,6 +133,7 @@ def make_director_figure(director_title_data):
     ax2.barh(rects2, tokuda_dm, height=width, edgecolor='white', label='Director Monsters', color='#736aab', zorder=2)
     # ax2.set_xlabel("Number of Monsters", fontsize='12', color='#423e35')
     ax2.set_yticks(rects1)
+    ax2.set_xlabel("Number of Monsters", fontsize='15', color='#423e35')
     ax2.set_yticklabels(tokuda_titles, fontsize='15', color='#423e35')
     ax2.legend(fontsize='15', loc=3)
     ax2.invert_yaxis()
@@ -145,7 +146,6 @@ def make_director_figure(director_title_data):
     fig.patch.set_linewidth('1')
     fig.tight_layout(rect=[0, 0.03, 1, 0.95])
     fig.suptitle('Directors Monster Throughout the Series',fontsize='22',color='#423e35')
-    fig.supxlabel("Number of Monsters", fontsize='15', color='#423e35')
     fig.savefig('Figures/directors_monsters.png',
                 facecolor=fig.get_facecolor(),
                 edgecolor=fig.get_edgecolor(),
