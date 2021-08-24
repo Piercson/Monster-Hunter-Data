@@ -64,7 +64,7 @@ def make_base_ultimate_figure(base_ultimate):
     ax.set_yticklabels(labels, fontsize='17', color='#423e35')
     ax.invert_yaxis()
     ax.set_title('Base Game Vs Ultimate Expansion', color='#423e35', fontsize='20')
-    ax.set_xlabel('Amount of Monsters', fontsize='15', color='#423e35')
+    ax.set_xlabel('Amount of Large Monsters', fontsize='15', color='#423e35')
     ax.set_facecolor('#fcf3ea')
     ax.legend(['Monster Difference Between Games', 'Variant Monsters Added in Ultimate Expansion'])
     fig.set_facecolor('#fcf3ea')
