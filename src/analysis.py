@@ -206,3 +206,11 @@ def get_avg_amt_monsters(amt_monsters_df):
     print('Median of New Monster Ratio: {:2.5f}'.format(amt_monsters_df['New Monster Ratio'].median()))
     print('\nMean of Variant Monster Ratio: {:2.5f}'.format(amt_monsters_df['Variant Monster Ratio'].mean()))
     print('Median of Variant Monster Ratio: {:2.5f}'.format(amt_monsters_df['Variant Monster Ratio'].median()))
+
+def get_snake_wyverns(monster_hunter_data):
+    return monster_hunter_data[monster_hunter_data['Type'] == "Snake Wyvern"].sort_values(by=['Date Released']).drop_duplicates(subset=['Name'])[['Name','Type','Size','Title']]
+
+def get_last_seen_types(monster_hunter_data):
+    monster_types_last_seen = monster_hunter_data.sort_values(by=['Date Released'],ascending=True).drop_duplicates(subset=['Name']).drop_duplicates(subset=['Type'],keep='last')
+    min_date = monster_types_last_seen['Date Released'].min()
+    return monster_types_last_seen[monster_types_last_seen['Date Released'] == min_date][['Name','Type','Title']]
