@@ -201,7 +201,7 @@ def get_time_between_bas_ultimate(bu_game_date_data):
     print('Mean of time between games {:2.5f} months'.format(bu_game_date_data['Date Difference'].mean().days/30.5))
     print('Median of time between games {:2.5f} months'.format(bu_game_date_data['Date Difference'].median().days/30.5))
 
-def get_avg_amt_monsters(amt_monsters_df):
+def print_avg_amt_monsters(amt_monsters_df):
     print('Mean of New Monster Ratio {:2.5f} '.format(amt_monsters_df['New Monster Ratio'].mean()))
     print('Median of New Monster Ratio: {:2.5f}'.format(amt_monsters_df['New Monster Ratio'].median()))
     print('\nMean of Variant Monster Ratio: {:2.5f}'.format(amt_monsters_df['Variant Monster Ratio'].mean()))
@@ -214,3 +214,12 @@ def get_last_seen_types(monster_hunter_data):
     monster_types_last_seen = monster_hunter_data.sort_values(by=['Date Released'],ascending=True).drop_duplicates(subset=['Name']).drop_duplicates(subset=['Type'],keep='last')
     min_date = monster_types_last_seen['Date Released'].min()
     return monster_types_last_seen[monster_types_last_seen['Date Released'] == min_date][['Name','Type','Title']]
+
+def get_director_mean_monster_ratio(director_title_data):
+    return director_title_data.groupby(by='Director')['Director Monster Ratio'].mean().to_frame('Mean').reset_index()
+
+def fujioka_occ_comparison(most_occurances, monster_hunter_data):
+    most_occ_monsters = most_occurances['Name']
+    fujioka_monsters = monster_hunter_data.sort_values(by=['Date Released']).drop_duplicates(subset=['Name'])
+    fujioka_monsters = fujioka_monsters[fujioka_monsters['Director'] == 'Kaname Fujioka']
+    return fujioka_monsters[fujioka_monsters['Name'].isin(most_occ_monsters) == True]['Name'].count(), most_occ_monsters.count()

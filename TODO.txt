@@ -1,8 +1,0 @@
-Changes-----------------------
-Change Format for Figures
-	X axis nameing (try Vertical or legend)
-
-Analysis----------------------
-
-Director monsters
-monster that have been in the most titles

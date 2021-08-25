@@ -145,7 +145,7 @@ def make_director_figure(director_title_data):
     fig.set_edgecolor(color='#98805c')
     fig.patch.set_linewidth('1')
     fig.tight_layout(rect=[0, 0.03, 1, 0.95])
-    fig.suptitle('Directors Monster Throughout the Series',fontsize='22',color='#423e35')
+    fig.suptitle('Directors Monsters Throughout the Series',fontsize='22',color='#423e35')
     fig.savefig('Figures/directors_monsters.png',
                 facecolor=fig.get_facecolor(),
                 edgecolor=fig.get_edgecolor(),
