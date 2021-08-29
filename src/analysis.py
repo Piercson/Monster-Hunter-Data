@@ -119,7 +119,7 @@ def get_base_ultimate_df(game_titles, mh_data):
 
     return game_date_data.drop('index',axis=1)
 
-def get_monster_occurance_df(analysis_titles, mh_data):
+def get_monster_occurrence_df(analysis_titles, mh_data):
     # filter for analysis titles
     amt_analysis_titles_lst = analysis_titles['Base'].append(analysis_titles['Ultimate']).dropna()
     monster_occurance_data = mh_data[mh_data['Title'].isin(amt_analysis_titles_lst) == True].sort_values(
